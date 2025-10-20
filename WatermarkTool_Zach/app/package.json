@@ -1,0 +1,57 @@
+{
+  "name": "watermarktool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Image/Video watermark remove/add desktop app",
+  "main": "main.js",
+  "author": "you",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "dist": "electron-builder --win portable",
+    "dist:nsis": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "30.0.9",
+    "electron-builder": "24.13.3"
+  },
+  "dependencies": {
+    "ffmpeg-static": "5.2.0",
+    "fluent-ffmpeg": "2.1.2"
+  },
+  "build": {
+    "appId": "com.example.watermarktool",
+    "productName": "WatermarkTool",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "assets/**"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "WatermarkTool-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

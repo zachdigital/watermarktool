@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang='zh-CN'><head><meta charset='utf-8'/><title>WatermarkTool</title>
+<style>body{font-family:ui-sans-serif,system-ui;-webkit-font-smoothing:antialiased;margin:24px;} .row{display:flex;gap:12px;align-items:center;margin-bottom:10px} label{min-width:100px} input[type=text]{width:340px;padding:6px 10px} button{padding:8px 14px} .hint{color:#666;font-size:12px}</style>
+</head>
+<body>
+<h2>WatermarkTool（桌面版）</h2>
+<section style='border:1px solid #ddd;padding:12px;margin-bottom:16px'>
+<h3>视频加水印</h3>
+<div class='row'><label>视频：</label><input id='v-in' type='text' placeholder='未选择'><button id='btn-v-pick'>选择视频</button></div>
+<div class='row'><label>Logo：</label><input id='v-logo' type='text' placeholder='可选'><button id='btn-v-logo'>选择Logo</button></div>
+<div class='row'><label>文字：</label><input id='v-text' type='text' placeholder='可选'></div>
+<div class='row'><label>位置：</label><select id='v-pos'>
+<option value='W-w-20,H-h-20'>右下</option><option value='20,H-h-20'>左下</option><option value='W-w-20,20'>右上</option><option value='20,20'>左上</option><option value='(W-w)/2,(H-h)/2'>中间</option></select></div>
+<div class='row'><button id='btn-v-out'>选择输出</button><span id='v-out' class='hint'></span></div>
+<div class='row'><button id='btn-v-run'>开始处理</button><span id='v-status'></span></div>
+</section>
+<section style='border:1px solid #ddd;padding:12px;'><h3>视频去水印（delogo 矩形）</h3>
+<div class='row'><label>视频：</label><input id='d-in' type='text' placeholder='未选择'><button id='btn-d-pick'>选择视频</button></div>
+<div class='row'><label>x,y,w,h：</label><input id='d-rect' type='text' placeholder='如：110,50,160,60'></div>
+<div class='row'><button id='btn-d-out'>选择输出</button><span id='d-out' class='hint'></span></div>
+<div class='row'><button id='btn-d-run'>开始去水印</button><span id='d-status'></span></div></section>
+<script src='renderer.js'></script>
+<script>
+const $=(s)=>document.querySelector(s);
+$('#btn-v-pick').onclick=async()=>{$('#v-in').value=await window.renderGlue.pickVideo()||$('#v-in').value;};
+$('#btn-v-logo').onclick=async()=>{$('#v-logo').value=await window.renderGlue.pickImage()||$('#v-logo').value;};
+$('#btn-v-out').onclick=async()=>{$('#v-out').textContent=await window.renderGlue.saveAs('output_watermarked.mp4')||'';};
+$('#btn-v-run').onclick=async()=>{const pos=$('#v-pos').value.split(',');const cfg={input:$('#v-in').value,output:$('#v-out').textContent||'output_watermarked.mp4',logo:$('#v-logo').value||null,text:$('#v-text').value||null,x:pos[0],y:pos[1],fontsize:36,fontcolor:'white'};$('#v-status').textContent='处理中…';try{await window.renderGlue.addVideoWatermark(cfg);$('#v-status').textContent='完成 ✅';}catch(e){$('#v-status').textContent='失败：'+e;}};
+$('#btn-d-pick').onclick=async()=>{$('#d-in').value=await window.renderGlue.pickVideo()||$('#d-in').value;};
+$('#btn-d-out').onclick=async()=>{$('#d-out').textContent=await window.renderGlue.saveAs('output_clean.mp4')||'';};
+$('#btn-d-run').onclick=async()=>{const rect=($('#d-rect').value||'').split(',').map(s=>s.trim());const cfg={input:$('#d-in').value,output:$('#d-out').textContent||'output_clean.mp4',x:rect[0]||0,y:rect[1]||0,w:rect[2]||0,h:rect[3]||0};$('#d-status').textContent='处理中…';try{await window.renderGlue.delogoVideo(cfg);$('#d-status').textContent='完成 ✅';}catch(e){$('#d-status').textContent='失败：'+e;}};
+</script></body></html>
