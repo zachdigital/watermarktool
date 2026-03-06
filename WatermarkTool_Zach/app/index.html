@@ -1,32 +1,273 @@
 <!doctype html>
-<html lang='zh-CN'><head><meta charset='utf-8'/><title>WatermarkTool</title>
-<style>body{font-family:ui-sans-serif,system-ui;-webkit-font-smoothing:antialiased;margin:24px;} .row{display:flex;gap:12px;align-items:center;margin-bottom:10px} label{min-width:100px} input[type=text]{width:340px;padding:6px 10px} button{padding:8px 14px} .hint{color:#666;font-size:12px}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OmniMedius · 元域</title>
+  <meta name="description" content="OmniMedius · 元域。理论入口、项目展示、下载、留言与赞助。" />
+  <meta name="theme-color" content="#111111" />
+  <style>
+    :root{
+      --bg:#0b0c0f;
+      --card:#11131a;
+      --text:#e7e9ee;
+      --muted:#a7adbb;
+      --line:rgba(255,255,255,.08);
+      --accent:#8ef0c8;
+      --accent2:#8ab7ff;
+      --warn:#ffcc66;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --max:1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 0%, rgba(142,240,200,.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 15%, rgba(138,183,255,.18), transparent 55%),
+        radial-gradient(1200px 900px at 40% 110%, rgba(255,204,102,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 56px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:14px;
+      border:1px solid var(--line);
+      background:rgba(17,19,26,.55);
+      backdrop-filter: blur(10px);
+      border-radius:999px; box-shadow: var(--shadow);
+    }
+    .brand{display:flex; align-items:center; gap:12px; padding-left:6px}
+    .logo{
+      width:34px; height:34px; border-radius:12px;
+      background:linear-gradient(135deg, rgba(142,240,200,.95), rgba(138,183,255,.95));
+      position:relative; overflow:hidden;
+    }
+    .logo::after{
+      content:""; position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 45%);
+      transform: rotate(15deg);
+    }
+    .brand h1{margin:0; font-size:14px; letter-spacing:.3px}
+    .brand .sub{margin:0; font-size:12px; color:var(--muted)}
+    .nav{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .pill{
+      padding:10px 12px; border:1px solid var(--line); border-radius:999px;
+      color:var(--muted); background:rgba(255,255,255,.03); font-size:13px;
+    }
+    .pill.primary{color:#081016; background:linear-gradient(135deg, rgba(142,240,200,.95), rgba(138,183,255,.85))}
+    .hero{margin-top:22px; display:grid; grid-template-columns:1.25fr .75fr; gap:18px}
+    @media (max-width:900px){.hero{grid-template-columns:1fr}}
+    .card{
+      border:1px solid var(--line); background:rgba(17,19,26,.62);
+      backdrop-filter: blur(10px); border-radius:var(--radius); padding:18px; box-shadow: var(--shadow);
+    }
+    .hero h2{margin:0 0 10px; font-size:36px}
+    .hero p{margin:0; color:var(--muted); line-height:1.7}
+    .tagrow{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap}
+    .tag{font-size:12px; padding:8px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted)}
+    .tag strong{color:var(--text)}
+    .cta{margin-top:16px; display:flex; gap:10px; flex-wrap:wrap}
+    .btn{display:inline-flex; align-items:center; justify-content:center; padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.03); font-size:13px}
+    .btn.primary{color:#081016; background:linear-gradient(135deg, rgba(142,240,200,.95), rgba(138,183,255,.85))}
+    section{scroll-margin-top:90px; margin-top:18px}
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .title{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+    .title h3{margin:0; font-size:18px}
+    .title .hint{margin:0; font-size:12px; color:var(--muted)}
+    .item{border:1px solid var(--line); background:rgba(255,255,255,.03); border-radius:16px; padding:14px; min-height:120px}
+    .item h4{margin:0 0 6px; font-size:15px}
+    .item p{margin:0; color:var(--muted); line-height:1.65; font-size:13px}
+    .meta{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap}
+    .badge{font-size:12px; padding:6px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted)}
+    .note{border:1px dashed rgba(255,255,255,.18); background:rgba(0,0,0,.18); border-radius:16px; padding:12px; color:var(--muted); line-height:1.6; font-size:13px}
+    footer{margin-top:22px; padding:16px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+  </style>
 </head>
 <body>
-<h2>WatermarkTool（桌面版）</h2>
-<section style='border:1px solid #ddd;padding:12px;margin-bottom:16px'>
-<h3>视频加水印</h3>
-<div class='row'><label>视频：</label><input id='v-in' type='text' placeholder='未选择'><button id='btn-v-pick'>选择视频</button></div>
-<div class='row'><label>Logo：</label><input id='v-logo' type='text' placeholder='可选'><button id='btn-v-logo'>选择Logo</button></div>
-<div class='row'><label>文字：</label><input id='v-text' type='text' placeholder='可选'></div>
-<div class='row'><label>位置：</label><select id='v-pos'>
-<option value='W-w-20,H-h-20'>右下</option><option value='20,H-h-20'>左下</option><option value='W-w-20,20'>右上</option><option value='20,20'>左上</option><option value='(W-w)/2,(H-h)/2'>中间</option></select></div>
-<div class='row'><button id='btn-v-out'>选择输出</button><span id='v-out' class='hint'></span></div>
-<div class='row'><button id='btn-v-run'>开始处理</button><span id='v-status'></span></div>
-</section>
-<section style='border:1px solid #ddd;padding:12px;'><h3>视频去水印（delogo 矩形）</h3>
-<div class='row'><label>视频：</label><input id='d-in' type='text' placeholder='未选择'><button id='btn-d-pick'>选择视频</button></div>
-<div class='row'><label>x,y,w,h：</label><input id='d-rect' type='text' placeholder='如：110,50,160,60'></div>
-<div class='row'><button id='btn-d-out'>选择输出</button><span id='d-out' class='hint'></span></div>
-<div class='row'><button id='btn-d-run'>开始去水印</button><span id='d-status'></span></div></section>
-<script src='renderer.js'></script>
-<script>
-const $=(s)=>document.querySelector(s);
-$('#btn-v-pick').onclick=async()=>{$('#v-in').value=await window.renderGlue.pickVideo()||$('#v-in').value;};
-$('#btn-v-logo').onclick=async()=>{$('#v-logo').value=await window.renderGlue.pickImage()||$('#v-logo').value;};
-$('#btn-v-out').onclick=async()=>{$('#v-out').textContent=await window.renderGlue.saveAs('output_watermarked.mp4')||'';};
-$('#btn-v-run').onclick=async()=>{const pos=$('#v-pos').value.split(',');const cfg={input:$('#v-in').value,output:$('#v-out').textContent||'output_watermarked.mp4',logo:$('#v-logo').value||null,text:$('#v-text').value||null,x:pos[0],y:pos[1],fontsize:36,fontcolor:'white'};$('#v-status').textContent='处理中…';try{await window.renderGlue.addVideoWatermark(cfg);$('#v-status').textContent='完成 ✅';}catch(e){$('#v-status').textContent='失败：'+e;}};
-$('#btn-d-pick').onclick=async()=>{$('#d-in').value=await window.renderGlue.pickVideo()||$('#d-in').value;};
-$('#btn-d-out').onclick=async()=>{$('#d-out').textContent=await window.renderGlue.saveAs('output_clean.mp4')||'';};
-$('#btn-d-run').onclick=async()=>{const rect=($('#d-rect').value||'').split(',').map(s=>s.trim());const cfg={input:$('#d-in').value,output:$('#d-out').textContent||'output_clean.mp4',x:rect[0]||0,y:rect[1]||0,w:rect[2]||0,h:rect[3]||0};$('#d-status').textContent='处理中…';try{await window.renderGlue.delogoVideo(cfg);$('#d-status').textContent='完成 ✅';}catch(e){$('#d-status').textContent='失败：'+e;}};
-</script></body></html>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>OmniMedius · 元域</h1>
+          <p class="sub">理论入口 · 项目展示 · 下载 · 留言 · 赞助</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="pill" href="#about">元域</a>
+        <a class="pill" href="#projects">项目</a>
+        <a class="pill" href="#download">下载</a>
+        <a class="pill" href="#discuss">留言</a>
+        <a class="pill primary" href="#sponsor">赞助</a>
+      </nav>
+    </div>
+
+    <div class="hero">
+      <div class="card">
+        <h2>元域 · 理论入口</h2>
+        <p>
+          这里是 <span class="mono">omnimedius.com</span> 的首版首页，用于展示 OmniMedius 理论、项目入口、软件下载、留言讨论与赞助支持。
+          “元域”作为中文核心概念，用于对应 Omni 的整体性、跨域性与高阶场域特征。
+        </p>
+        <div class="tagrow">
+          <span class="tag"><strong>元</strong>：本源 / 高阶层</span>
+          <span class="tag"><strong>域</strong>：场域 / 系统范围</span>
+          <span class="tag">可扩展：元域交互 · 元域叙事 · 元域创作</span>
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="#about">了解元域</a>
+          <a class="btn" href="#projects">查看项目</a>
+          <a class="btn" href="#download">下载</a>
+        </div>
+        <div class="note" style="margin-top:14px">
+          当前是静态首页版本。你后续可以继续加：论文页、理论框架图、项目发布页、赞助页、留言系统。
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">
+          <h3>当前站点定位</h3>
+          <p class="hint">Route A</p>
+        </div>
+        <div style="margin-top:12px; display:grid; gap:10px">
+          <div class="item">
+            <h4>主域名</h4>
+            <p><span class="mono">omnimedius.com</span></p>
+            <div class="meta"><span class="badge">Main Site</span></div>
+          </div>
+          <div class="item">
+            <h4>主品牌</h4>
+            <p>OmniMedius · 元域</p>
+            <div class="meta"><span class="badge">Theory</span><span class="badge">Chinese Core Word</span></div>
+          </div>
+          <div class="item">
+            <h4>后续方向</h4>
+            <p>先让理论站上线，再逐步补项目、下载、留言与赞助。</p>
+            <div class="meta"><span class="badge">Incremental</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="about" class="card">
+      <div class="title">
+        <h3>关于“元域”</h3>
+        <p class="hint">中文核心概念</p>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        <div class="item">
+          <h4>概念定义</h4>
+          <p><strong>元域</strong>：以更高阶视角统一空间、媒介、感知与交互的可设计场域。</p>
+          <div class="meta"><span class="badge">Meta-Field</span><span class="badge">Omni</span></div>
+        </div>
+        <div class="item">
+          <h4>理论延展</h4>
+          <p>元域交互、元域叙事、元域创作、元域空间。</p>
+          <div class="meta"><span class="badge">System</span><span class="badge">Lexicon</span></div>
+        </div>
+        <div class="item">
+          <h4>表达策略</h4>
+          <p>保留英文理论名 OmniMedius，同时以“元域”作为中文核心概念，简洁且有哲学层级。</p>
+          <div class="meta"><span class="badge">Naming</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="card">
+      <div class="title">
+        <h3>项目</h3>
+        <p class="hint">后续可以替换成你的真实项目</p>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        <div class="item">
+          <h4>理论框架</h4>
+          <p>放 OmniMedius / 元域 的框架图、论文摘要、研究说明。</p>
+          <div class="meta"><span class="badge">Framework</span></div>
+        </div>
+        <div class="item">
+          <h4>开源项目</h4>
+          <p>放你的软件、工具、脚本、插件与 GitHub 链接。</p>
+          <div class="meta"><span class="badge">Open Source</span></div>
+        </div>
+        <div class="item">
+          <h4>案例展示</h4>
+          <p>放你的文旅、展陈、交互体验与理论应用案例。</p>
+          <div class="meta"><span class="badge">Cases</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="download" class="card">
+      <div class="title">
+        <h3>下载</h3>
+        <p class="hint">把文件放到 /web/downloads/</p>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        <div class="item">
+          <h4>Windows</h4>
+          <p>示例路径：<span class="mono">/downloads/yourapp-windows.zip</span></p>
+          <div class="meta"><a class="badge" href="/downloads/yourapp-windows.zip">下载</a></div>
+        </div>
+        <div class="item">
+          <h4>macOS</h4>
+          <p>示例路径：<span class="mono">/downloads/yourapp-macos.zip</span></p>
+          <div class="meta"><a class="badge" href="/downloads/yourapp-macos.zip">下载</a></div>
+        </div>
+        <div class="item">
+          <h4>Linux</h4>
+          <p>示例路径：<span class="mono">/downloads/yourapp-linux.tar.gz</span></p>
+          <div class="meta"><a class="badge" href="/downloads/yourapp-linux.tar.gz">下载</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="discuss" class="card">
+      <div class="title">
+        <h3>留言</h3>
+        <p class="hint">首版可先放讨论入口</p>
+      </div>
+      <div class="note" style="margin-top:12px">
+        现在可以先放一个 GitHub Issues / Discussions 链接。后续你要是决定用 giscus，我再给你加完整评论脚本。
+      </div>
+    </section>
+
+    <section id="sponsor" class="card">
+      <div class="title">
+        <h3>赞助</h3>
+        <p class="hint">支持项目持续迭代</p>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        <div class="item">
+          <h4>GitHub Sponsors</h4>
+          <p>适合海外用户和开源社区用户。</p>
+          <div class="meta"><span class="badge">Open Source</span></div>
+        </div>
+        <div class="item">
+          <h4>微信 / 支付宝</h4>
+          <p>后续可把收款码放进 <span class="mono">/web/assets/</span> 后嵌入本页。</p>
+          <div class="meta"><span class="badge">CN Payment</span></div>
+        </div>
+        <div class="item">
+          <h4>合作联系</h4>
+          <p>可增加高校、文旅、机构合作入口。</p>
+          <div class="meta"><span class="badge">B2B</span></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="y"></span> OmniMedius · 元域</div>
+      <div class="mono">omnimedius.com</div>
+    </footer>
+  </div>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
